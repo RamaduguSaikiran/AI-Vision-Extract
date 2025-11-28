@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* Floating orbs */
+.about-orb {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,0.11), transparent 70%);
+  filter: blur(60px);
+  opacity: 0.25;
+  animation: aboutFloat 14s ease-in-out infinite alternate;
+}
+
+@keyframes aboutFloat {
+  0%   { transform: translateY(0px) translateX(0px); }
+  100% { transform: translateY(-50px) translateX(40px); }
+}
+
+/* Developer Card Hover Tilt */
+.dev-card {
+  transform-style: preserve-3d;
+  transition: transform 0.22s ease;
+}
+.dev-card:hover {
+  transform: perspective(900px) rotateX(10deg) rotateY(-10deg) scale(1.03);
+}
+
+/* Gradient line */
+.grad-underline {
+  background: linear-gradient(90deg, #f472b6, #8b5cf6, #38bdf8);
+  height: 3px;
+  width: 85px;
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+/* Social Icons */
+.social-icon {
+  width: 28px;
+  height: 28px;
+  opacity: 0.85;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.social-icon:hover {
+  opacity: 1;
+  transform: scale(1.18);
+}
+
+/* Photo styling */
+.dev-photo {
+  width: 115px;
+  height: 115px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.15);
+  box-shadow: 0 0 25px rgba(168,85,247,0.5);
+}
+</style>
+
+
+<!-- BACKGROUND ORBS -->
+<div class="about-orb -top-20 -left-20"></div>
+<div class="about-orb bottom-0 right-0"></div>
+
+
+<div class="animate-fadeSlideIn relative z-10">
+
+    <!-- HERO SECTION -->
+    <section class="mb-16">
+        <div class="hero-nebula p-10 md:p-14 rounded-3xl border border-slate-700/70 shadow-[0_25px_70px_rgba(0,0,0,0.95)]">
+
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight 
+                bg-gradient-to-r from-fuchsia-300 via-purple-400 to-sky-300
+                bg-clip-text text-transparent drop-shadow-[0_0_22px_rgba(168,85,247,0.5)]">
+                About AIvision Extract
+            </h1>
+
+            <p class="text-slate-300 text-base md:text-lg max-w-2xl mt-4 leading-relaxed">
+                AIvision Extract is a cinematic-grade background processing studio powered by 
+                deep-learning segmentation, crafted for precision and built for creators.
+            </p>
+
+            <div class="grad-underline"></div>
+        </div>
+    </section>
+
+
+
+    <!-- FEATURES SECTION -->
+    <section class="mb-20">
+        <h2 class="text-2xl font-bold text-sky-300 drop-shadow-[0_0_15px_rgba(56,189,248,0.5)] mb-6">
+            What This Studio Offers
+        </h2>
+
+        <div class="grid gap-8 md:grid-cols-2">
+
+            <div class="ai-card-glass p-6 rounded-3xl">
+                <h3 class="text-lg font-semibold text-purple-200">🧼 Background Removal</h3>
+                <p class="text-slate-400 text-sm mt-2">
+                    Crisp extraction using a refined U-Net segmentation model.
+                </p>
+            </div>
+
+            <div class="ai-card-glass p-6 rounded-3xl">
+                <h3 class="text-lg font-semibold text-purple-200">🎨 Background Replacement</h3>
+                <p class="text-slate-400 text-sm mt-2">
+                    Replace with solid colors or full-scene images with cinematic clarity.
+                </p>
+            </div>
+
+            <div class="ai-card-glass p-6 rounded-3xl">
+                <h3 class="text-lg font-semibold text-purple-200">📸 Portrait Blur</h3>
+                <p class="text-slate-400 text-sm mt-2">
+                    Studio-style depth blur that preserves details and focus.
+                </p>
+            </div>
+
+            <div class="ai-card-glass p-6 rounded-3xl">
+                <h3 class="text-lg font-semibold text-purple-200">📁 Batch Processing</h3>
+                <p class="text-slate-400 text-sm mt-2">
+                    Process dozens of images at once with consistent professional output.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- DEVELOPER CARD -->
+    <!-- DEVELOPER + THANK YOU SIDE-BY-SIDE -->
+<section class="mb-24">
+
+    <div class="grid md:grid-cols-2 gap-12">
+
+        <!-- LEFT: DEVELOPER CARD -->
+        <div class="w-full">
+            <div class="holo-border p-[2px] rounded-3xl">
+
+                <div class="dev-card rounded-3xl p-7
+                    bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-950/95
+                    shadow-[0_25px_60px_rgba(0,0,0,0.9)]
+                    hover:shadow-[0_25px_75px_rgba(0,0,0,1)]
+                    transition-all duration-300">
+
+                    <!-- PHOTO -->
+                    <div class="flex justify-center mb-5">
+                        <img src="{{ url_for('static', filename='images/profile.jpeg') }}" 
+                             class="dev-photo">
+                    </div>
+
+                    <!-- NAME -->
+                    <h3 class="text-2xl font-bold text-sky-300 text-center">
+                        Ramadugu Sai Kiran
+                    </h3>
+
+                    <p class="text-slate-400 text-sm mt-2 text-center leading-relaxed">
+                        Creator of AIvision Extract — building cinematic AI tools using deep learning,
+                        computer vision pipelines, and futuristic UI engineering.
+                    </p>
+
+                    <!-- SOCIAL ICONS -->
+                    <div class="flex justify-center gap-6 mt-6">
+
+                        <!-- GitHub -->
+                        <a href="https://github.com/RamaduguSaikiran" target="_blank">
+                            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png"
+                                 class="social-icon">
+                        </a>
+
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/in/ramadugusaikiran/" target="_blank">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3536/3536505.png"
+                                 class="social-icon">
+                        </a>
+
+                        <!-- Portfolio -->
+                        <a href="https://saikiran-portfolio-omega.vercel.app/" target="_blank">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4539/4539479.png"
+                                 class="social-icon">
+                        </a>
+                    </div>
+
+                    <!-- Small Gradient Line -->
+                    <div class="mt-5 h-[3px] w-20 mx-auto 
+                        bg-gradient-to-r from-sky-500 to-fuchsia-500 rounded-full"></div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <!-- RIGHT: THANK YOU CARD -->
+        <div class="w-full flex">
+            <div class="ai-card-glass p-8 rounded-3xl w-full">
+
+                <h2 class="text-2xl font-bold text-purple-300 
+                    drop-shadow-[0_0_20px_rgba(168,85,247,0.45)] mb-4">
+                    Special Thanks
+                </h2>
+
+                <p class="text-slate-300 text-base leading-relaxed">
+                    I extend my sincere gratitude to 
+                    <span class="text-fuchsia-300 font-semibold">
+                        Mr. Nalla Suman (Infosys Springboard Mentor)
+                    </span>
+                    for his continuous support, guidance, and encouragement throughout this project.
+                    His mentorship was invaluable in shaping the direction and quality
+                    of AIvision Extract.
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

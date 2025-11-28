@@ -1,0 +1,609 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title if title else "AIvision Extract" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              500: '#4f9cff',
+              600: '#407ce0',
+              700: '#2756b9',
+            },
+            accent: {
+              500: '#8b5cf6',
+              600: '#7c3aed',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root { color-scheme: dark; }
+
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.16), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.20), transparent 55%),
+        radial-gradient(circle at top right, rgba(74,222,128,0.12), transparent 55%),
+        #020617;
+      color: #e5e7eb;
+    }
+
+    /* Subtle noise overlay */
+    body::before {
+      content: "";
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+      z-index: -1;
+    }
+
+    /* ------------------------
+       GLASS / NEON CARDS
+       ------------------------ */
+
+    .ai-card-glass {
+      position: relative;
+      border-radius: 1.5rem;
+      background:
+        linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border: 1px solid rgba(148,163,253,0.4);
+      box-shadow:
+        0 18px 45px rgba(15,23,42,0.95),
+        0 0 30px rgba(79,70,229,0.35);
+      overflow: hidden;
+      backdrop-filter: blur(24px);
+    }
+    .ai-card-glass::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.12), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(168,85,247,0.15), transparent 55%);
+      opacity: 0.75;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+    .ai-card-glass-inner {
+      position: relative;
+      padding: 1.5rem;
+    }
+
+    /* HERO NEBULA (used on index) */
+    .hero-nebula {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2rem;
+      border: 1px solid rgba(148,163,253,0.6);
+      background:
+        radial-gradient(circle at 10% 0, rgba(59,130,246,0.35), transparent 60%),
+        radial-gradient(circle at 90% 20%, rgba(236,72,153,0.30), transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(56,189,248,0.25), transparent 60%),
+        rgba(15,23,42,0.96);
+      box-shadow:
+        0 35px 80px rgba(15,23,42,1),
+        0 0 55px rgba(59,130,246,0.55);
+    }
+    .hero-nebula::before,
+    .hero-nebula::after {
+      content: "";
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .hero-nebula::before {
+      background: radial-gradient(circle, rgba(59,130,246,0.7), transparent 60%);
+      top: -160px;
+      left: -120px;
+      animation: float-soft 22s ease-in-out infinite alternate;
+    }
+    .hero-nebula::after {
+      background: radial-gradient(circle, rgba(244,63,94,0.7), transparent 60%);
+      bottom: -200px;
+      right: -150px;
+      animation: float-soft 24s ease-in-out infinite alternate-reverse;
+    }
+
+    /* PREVIEW FRAMES (used earlier) */
+    .ai-preview-frame {
+      border-radius: 1.5rem;
+      border: 1px solid rgba(148,163,253,0.55);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(2,6,23,1));
+      box-shadow:
+        0 16px 40px rgba(15,23,42,0.95),
+        0 0 22px rgba(79,70,229,0.45);
+      overflow: hidden;
+    }
+    .ai-preview-frame img {
+      border-radius: 1.25rem;
+    }
+
+    /* ------------------------
+       CINEMATIC PANELS (Style A)
+       ------------------------ */
+
+    .ai-panel-cinematic {
+      position: relative;
+      border-radius: 1.8rem;
+      background:
+        linear-gradient(120deg, rgba(56,189,248,0.5), rgba(236,72,153,0.55));
+      box-shadow:
+        0 0 40px rgba(56,189,248,0.35),
+        0 0 80px rgba(236,72,153,0.25);
+    }
+    .ai-panel-inner {
+      position: relative;
+      border-radius: 1.6rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(15,23,42,0.98), rgba(15,23,42,0.95));
+      border: 1px solid rgba(30,64,175,0.75);
+      box-shadow:
+        0 18px 40px rgba(15,23,42,0.9),
+        inset 0 0 40px rgba(15,23,42,0.9);
+      backdrop-filter: blur(26px);
+    }
+
+    /* CINEMATIC IMAGE PREVIEW */
+    .ai-preview-cinematic {
+      position: relative;
+      border-radius: 1.6rem;
+      padding: 0.75rem;
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.35), transparent 65%),
+        radial-gradient(circle at bottom, rgba(236,72,153,0.3), transparent 65%),
+        rgba(15,23,42,0.98);
+      border: 1px solid rgba(129,140,248,0.7);
+      box-shadow:
+        0 26px 60px rgba(15,23,42,1),
+        0 0 42px rgba(56,189,248,0.5);
+      overflow: hidden;
+    }
+    .ai-preview-cinematic::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(15,23,42,0.9), transparent 60%);
+      mix-blend-mode: soft-light;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    .ai-preview-cinematic img {
+      position: relative;
+      z-index: 1;
+      display: block;
+    }
+    .ai-preview-glow {
+      animation: previewPulse 3.2s ease-in-out infinite;
+    }
+
+    /* ------------------------
+       BUTTON SYSTEM
+       ------------------------ */
+
+    /* Holographic primary button (Style A) */
+    .ai-btn-holo {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      text-decoration: none;
+      color: #f9fafb;
+      background:
+        linear-gradient(120deg, #4f46e5, #06b6d4, #ec4899);
+      background-size: 220% 220%;
+      box-shadow:
+        0 0 0 rgba(56,189,248,0),
+        0 14px 35px rgba(15,23,42,0.95);
+      transform: translate3d(0,0,0);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background-position 0.25s ease,
+        opacity 0.18s ease;
+      will-change: transform, box-shadow;
+      overflow: hidden;
+    }
+    .ai-btn-holo::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 0 0, rgba(248,250,252,0.25), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      mix-blend-mode: screen;
+    }
+    .ai-btn-holo::after {
+      content: "";
+      position: absolute;
+      inset: -80%;
+      background:
+        conic-gradient(from 0deg, rgba(255,255,255,0.4), transparent, transparent, rgba(255,255,255,0.35));
+      opacity: 0;
+      transform: rotate(0deg);
+      animation: holoSweep 3.5s linear infinite;
+      mix-blend-mode: screen;
+    }
+    .ai-btn-holo:hover {
+      background-position: 100% 0;
+      transform: translate3d(0,-2px,0) scale(1.03);
+      box-shadow:
+        0 0 26px rgba(59,130,246,0.75),
+        0 18px 45px rgba(15,23,42,0.95);
+    }
+    .ai-btn-holo:hover::before {
+      opacity: 0.5;
+    }
+    .ai-btn-holo:hover::after {
+      opacity: 0.6;
+    }
+    .ai-btn-holo:active {
+      transform: translate3d(0,1px,0) scale(0.99);
+      opacity: 0.97;
+      box-shadow:
+        0 0 12px rgba(59,130,246,0.75),
+        0 8px 20px rgba(15,23,42,1);
+    }
+
+    /* Secondary button (used for download etc.) */
+    .ai-btn-secondary {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.6rem 1.35rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid rgba(148,163,253,0.85);
+      color: #e5e7eb;
+      background: radial-gradient(circle at top, rgba(30,64,175,0.7), rgba(15,23,42,0.95));
+      box-shadow:
+        0 0 0 rgba(148,163,253,0),
+        0 10px 25px rgba(15,23,42,0.95);
+      transform: translate3d(0,0,0);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease,
+        opacity 0.18s ease;
+    }
+    .ai-btn-secondary:hover {
+      background:
+        radial-gradient(circle at top, rgba(59,130,246,0.9), rgba(15,23,42,1));
+      box-shadow:
+        0 0 22px rgba(129,140,248,0.8),
+        0 14px 32px rgba(15,23,42,1);
+      transform: translate3d(0,-1px,0) scale(1.02);
+    }
+    .ai-btn-secondary:active {
+      transform: translate3d(0,1px,0) scale(0.99);
+      opacity: 0.96;
+    }
+    .ai-btn-glow {
+      box-shadow: 0 0 20px rgba(129,140,248,0.8);
+    }
+
+    /* Magnetic hover (used by holo + secondary when data-magnetic attr present) */
+    .ai-btn-holo[data-magnetic],
+    .ai-btn-secondary[data-magnetic] {
+      will-change: transform;
+    }
+
+    /* ------------------------
+       ANIMATIONS
+       ------------------------ */
+
+    .page-enter {
+      animation: fade-in-up 0.55s ease-out both;
+    }
+
+    .animate-fadeSlideIn {
+      animation: fadeSlideIn 0.65s ease-out both;
+    }
+
+    @keyframes float-soft {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      50%  { transform: translate3d(20px,-15px,0) scale(1.03); }
+      100% { transform: translate3d(-10px,10px,0) scale(1.02); }
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translate3d(0,16px,0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0,0,0);
+      }
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translate3d(0,18px,0) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0,0,0) scale(1);
+      }
+    }
+
+    @keyframes holoSweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes previewPulse {
+      0%, 100% { box-shadow:
+                   0 26px 60px rgba(15,23,42,1),
+                   0 0 38px rgba(56,189,248,0.5); }
+      50% { box-shadow:
+                   0 30px 75px rgba(15,23,42,1),
+                   0 0 60px rgba(236,72,153,0.65); }
+    }
+    /* --- GLOBAL PARTICLES --- */
+    .global-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    }
+
+    .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 60%);
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat {
+    from { transform: translateY(0px); opacity: 0.5; }
+    to   { transform: translateY(-1200px); opacity: 0; }
+    }
+
+
+    /* --- GLOBAL SPOTLIGHT --- */
+    #global-spotlight {
+        position: fixed;
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 70%);
+        mix-blend-mode: soft-light;
+        filter: blur(40px);
+        z-index: 9999;   /* FIXED */
+        transform: translate(-9999px, -9999px);
+        transition: transform 0.04s linear;
+    }
+
+    /* ============================
+   GLOBAL HOLOGRAPHIC BORDER
+   ============================ */
+    #global-holo-border {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        border-radius: 22px;
+        z-index: 9998; /* just under spotlight */
+        border: 2px solid transparent;
+
+        background:
+            linear-gradient(115deg,
+            rgba(79,70,229,0.9),
+            rgba(6,182,212,0.9),
+            rgba(236,72,153,0.9),
+            rgba(79,70,229,0.9)
+            ) border-box;
+
+        mask:
+            linear-gradient(#fff 0 0) padding-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask:
+            linear-gradient(#fff 0 0) padding-box,
+            linear-gradient(#fff 0 0);
+
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+
+        animation: holoBorderMove 6s linear infinite;
+        box-shadow:
+            0 0 22px rgba(129,140,248,0.4),
+            0 0 45px rgba(56,189,248,0.25),
+            inset 0 0 22px rgba(129,140,248,0.35);
+        }
+
+        @keyframes holoBorderMove {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+
+
+
+  </style>
+</head>
+
+<body class="min-h-full text-slate-100">
+     <!-- GLOBAL FLOATING PARTICLES -->
+    <div class="global-particles">
+        {% for i in range(40) %}
+        <div class="particle"
+            style="
+                left: {{ range(3, 97) | random }}%;
+                top: {{ range(20, 120) | random }}%;
+                animation-duration: {{ range(6, 16) | random }}s;
+                animation-delay: -{{ range(0, 20) | random }}s;
+            ">
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- GLOBAL SPOTLIGHT CURSOR -->
+
+     <div id="global-spotlight">    </div>
+    <div id="global-holo-border"></div>
+   
+
+
+   
+    
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800/80 relative z-20">
+
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div
+          class="h-9 w-9 rounded-3xl bg-gradient-to-tr from-brand-500 via-accent-500 to-fuchsia-500 flex items-center justify-center shadow-[0_0_26px_rgba(129,140,248,0.8)]"
+        >
+          <span class="text-xl">🧠</span>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <a href="{{ url_for('index') }}" class="font-semibold text-lg tracking-tight">
+            AIvision Extract
+          </a>
+          <span class="text-xs text-slate-400">AI Background Intelligence Studio</span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="{{ url_for('background_removal') }}" class="px-3 py-1.5 rounded-xl hover:bg-slate-800/80 transition">
+          Removal
+        </a>
+        <a href="{{ url_for('background_replace') }}" class="px-3 py-1.5 rounded-xl hover:bg-slate-800/80 transition">
+          Replace
+        </a>
+        <a href="{{ url_for('blur_background_page') }}" class="px-3 py-1.5 rounded-xl hover:bg-slate-800/80 transition">
+          Blur
+        </a>
+        <a href="{{ url_for('batch_processing') }}" class="px-3 py-1.5 rounded-xl hover:bg-slate-800/80 transition">
+          Batch
+        </a>
+        <a href="{{ url_for('sample_gallery') }}" class="px-3 py-1.5 rounded-xl hover:bg-slate-800/80 transition">
+          Gallery
+        </a>
+        <a href="{{ url_for('about') }}" class="px-3 py-1.5 rounded-xl hover:bg-slate-800/80 transition">
+          About
+        </a>
+      </nav>
+
+      
+        
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="mx-auto max-w-6xl px-4 pt-8 pb-12 page-enter relative z-10">
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-5 space-y-2">
+          {% for category, msg in messages %}
+            <div
+              class="flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm
+              {% if category == 'error' %}
+                border-red-500/40 bg-red-500/10 text-red-200
+              {% elif category == 'success' %}
+                border-emerald-500/40 bg-emerald-500/10 text-emerald-100
+              {% else %}
+                border-slate-600/60 bg-slate-800/70 text-slate-100
+              {% endif %}"
+            >
+              <span class="text-xs">●</span>
+              <span>{{ msg }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800/80 bg-slate-950/90">
+    <div class="mx-auto max-w-6xl px-4 py-4 text-center text-xs text-slate-500">
+      Developed with ❤️ using Flask & Deep Learning Models · © 2025 AIvision Extract
+    </div>
+  </footer>
+
+  <!-- Magnetic button JS -->
+  <script>
+    const spotlight = document.getElementById("global-spotlight");
+    document.addEventListener("mousemove", (e) => {
+    const x = e.clientX - spotlight.offsetWidth / 2;
+    const y = e.clientY - spotlight.offsetHeight / 2;
+    spotlight.style.transform = `translate(${x}px, ${y}px)`;
+  });
+
+    document.querySelectorAll(".ai-btn-holo[data-magnetic], .ai-btn-secondary[data-magnetic]")
+      .forEach(btn => {
+        const strength = 16; // px
+        btn.addEventListener("mousemove", (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate3d(${x/strength}px, ${y/strength}px, 0) scale(1.03)`;
+        });
+        btn.addEventListener("mouseleave", () => {
+          btn.style.transform = "";
+        });
+      });
+  </script>
+</body>
+</html>

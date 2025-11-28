@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* PARTICLES */
+.gallery-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: transparent;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 60%);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: particleMove linear infinite;
+}
+
+@keyframes particleMove {
+  from { transform: translateY(0px); opacity: 0.5; }
+  to   { transform: translateY(-1200px); opacity: 0; }
+}
+
+/* SPOTLIGHT CURSOR */
+.spotlight {
+  position: fixed;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+  mix-blend-mode: soft-light;
+  filter: blur(40px);
+  z-index: 0;
+  transition: transform 0.05s linear;
+}
+
+/* RGB HOLOGRAM BORDER */
+.holo-border {
+  position: relative;
+}
+
+.holo-border:before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(
+    from 0deg,
+    #ff00ff,
+    #00ffff,
+    #ff0099,
+    #00eaff,
+    #ff00ff
+  );
+  border-radius: inherit;
+  z-index: -1;
+  animation: rotateBorder 5s linear infinite;
+  opacity: 0.55;
+}
+
+@keyframes rotateBorder {
+  to { transform: rotate(360deg); }
+}
+
+/* 3D TILT HOVER */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.25s ease;
+}
+
+.tilt-card:hover {
+  transform: perspective(900px) rotateX(8deg) rotateY(-8deg) scale(1.04);
+}
+
+/* SHIMMER */
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.25) 45%,
+    transparent 90%
+  );
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.5s, transform 0.7s;
+}
+
+.shimmer:hover::after {
+  opacity: 0.35;
+  transform: translateX(100%);
+}
+
+/* FLOATING LIGHT ORBS */
+.orb {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 75%);
+  filter: blur(45px);
+  opacity: 0.22;
+  animation: floatOrb 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatOrb {
+  from { transform: translateY(0px) translateX(0px); }
+  to   { transform: translateY(-40px) translateX(35px); }
+}
+</style>
+
+
+
+
+<!-- PARTICLES -->
+<div class="gallery-particles">
+    {% for i in range(40) %}
+    <div class="particle"
+        style="
+            left: {{ range(5, 95) | random }}%;
+            top: {{ range(20, 120) | random }}%;
+            animation-duration: {{ range(6, 18) | random }}s;
+            animation-delay: -{{ range(0, 20) | random }}s;
+        ">
+    </div>
+    {% endfor %}
+</div>
+
+<!-- SPOTLIGHT CURSOR -->
+<div class="spotlight" id="spotlight"></div>
+
+
+<!-- PAGE CONTENT -->
+<div class="animate-fadeSlideIn relative z-10">
+
+    <!-- HEADER -->
+    <section class="mb-10">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight
+            bg-gradient-to-r from-purple-200 via-fuchsia-400 to-sky-300
+            bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(236,72,153,0.6)]">
+            Sample Gallery
+        </h1>
+
+        <p class="text-slate-300 text-sm md:text-base max-w-2xl mt-3 opacity-90 leading-relaxed">
+            Explore professional AI background-removal samples enhanced using our
+            cinematic RunwayML-style rendering engine.
+        </p>
+    </section>
+
+
+
+    {% if files %}
+    <section class="mt-10 grid gap-12 sm:grid-cols-2 md:grid-cols-3">
+
+        {% for file in files %}
+        <div class="group relative">
+
+            <!-- ORB LIGHT -->
+            <div class="orb"></div>
+
+            <!-- CINEMATIC CARD -->
+            <div class="holo-border rounded-3xl p-[2px]">
+
+                <div class="rounded-3xl overflow-hidden tilt-card shimmer
+                    bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-slate-950/95
+                    shadow-[0_25px_65px_rgba(0,0,0,0.95)]
+                    transition-all duration-500">
+
+                    <div class="relative w-full h-[280px] overflow-hidden">
+                        <img src="{{ url_for('static', filename='samples/' + file) }}"
+                             class="w-full h-full object-contain rounded-2xl
+                                    transition-transform duration-700 group-hover:scale-[1.17]">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- FILENAME -->
+            <p class="text-xs text-slate-400 mt-3 ml-1">
+                {{ file }}
+            </p>
+        </div>
+        {% endfor %}
+
+    </section>
+    {% endif %}
+
+</div>
+
+
+<!-- SPOTLIGHT JS -->
+<script>
+document.addEventListener("mousemove", (e) => {
+  const spotlight = document.getElementById("spotlight");
+  spotlight.style.transform = `translate(${e.clientX - 150}px, ${e.clientY - 150}px)`;
+});
+</script>
+
+{% endblock %}

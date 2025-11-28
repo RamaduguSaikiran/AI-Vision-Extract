@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="animate-fadeSlideIn">
+
+    <!-- HEADER -->
+    <section class="mb-10">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight 
+                   bg-gradient-to-r from-sky-300 via-purple-400 to-fuchsia-300
+                   bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(125,211,252,0.35)]">
+            Blur Background
+        </h1>
+
+        <p class="text-slate-300 text-sm md:text-base max-w-2xl mt-3 opacity-90 leading-relaxed">
+            Apply a professional portrait-style blur behind the subject using our AI 
+            cinematic segmentation model.
+        </p>
+    </section>
+
+
+    <!-- FORM PANEL -->
+    <div class="ai-panel-cinematic p-[2px] rounded-[1.8rem]">
+        <div class="ai-panel-inner px-6 py-7 md:px-10 md:py-10 space-y-8">
+
+            <form method="post" enctype="multipart/form-data" class="space-y-8">
+
+                <!-- Upload main image -->
+                <div class="flex flex-col gap-3">
+                    <label class="text-xs uppercase tracking-wide text-slate-300/80">
+                        Upload Image
+                    </label>
+
+                    <input
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        required
+                        class="block w-full text-xs text-slate-300 file:mr-3
+                               file:bg-gradient-to-r file:from-sky-500 file:to-fuchsia-500
+                               file:text-white file:font-semibold file:px-3 file:py-2
+                               file:rounded-xl hover:file:scale-[1.03]
+                               transition-all duration-200 cursor-pointer
+                               bg-slate-900/70 border border-slate-700 rounded-xl px-3 py-3
+                               hover:bg-slate-900/80 backdrop-blur-xl"
+                    />
+                </div>
+
+                <!-- Blur Slider -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs uppercase tracking-wide text-slate-300/80">
+                        Blur Strength
+                    </label>
+
+                    <input
+                        type="range"
+                        name="blur"
+                        min="5"
+                        max="75"
+                        step="1"
+                        value="{{ blur_value if blur_value else 25 }}"
+                        class="w-full h-2 rounded-full cursor-pointer
+                               bg-gradient-to-r from-sky-500 via-purple-500 to-fuchsia-500
+                               appearance-none outline-none"
+                    />
+
+                    <div class="text-[0.75rem] text-slate-400">
+                        Higher values create a stronger background blur.
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <div class="pt-2">
+                    <button type="submit" class="ai-btn-holo" data-magnetic="true">
+                        🎥 Apply Blur
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- RESULT PREVIEW -->
+    {% if output_b64 %}
+    <section class="mt-16 space-y-10">
+
+        <h2 class="text-xl md:text-2xl font-semibold 
+                   text-purple-300 drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]
+                   border-l-4 border-purple-400 pl-4">
+            Result Preview
+        </h2>
+
+        <div class="grid gap-12 md:grid-cols-2">
+
+            <!-- INPUT IMAGE -->
+            <div class="flex flex-col gap-3">
+                <h3 class="text-sm uppercase tracking-wide text-slate-300/90">Input Image</h3>
+
+                <div class="ai-preview-cinematic">
+                    <img
+                        src="data:image/png;base64,{{ input_b64 }}"
+                        alt="Input Image"
+                        class="rounded-[1.4rem] w-full object-contain"
+                    />
+                </div>
+            </div>
+
+            <!-- OUTPUT IMAGE -->
+            <div class="flex flex-col gap-4">
+                <h3 class="text-sm uppercase tracking-wide text-slate-300/90">
+                    Output — Blurred Background
+                </h3>
+
+                <div class="ai-preview-cinematic ai-preview-glow">
+                    <img
+                        src="data:image/png;base64,{{ output_b64 }}"
+                        alt="Output Image"
+                        class="rounded-[1.4rem] w-full object-contain"
+                    />
+                </div>
+
+                <!-- Download -->
+                <a
+                    download="blurred_bg.png"
+                    href="data:image/png;base64,{{ output_b64 }}"
+                    class="ai-btn-secondary ai-btn-glow text-xs px-4 py-2 inline-flex"
+                    data-magnetic="true"
+                >
+                    ⬇ Download Output
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+    {% endif %}
+
+</div>
+
+{% endblock %}

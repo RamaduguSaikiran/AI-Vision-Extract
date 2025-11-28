@@ -1,0 +1,14 @@
+flask
+streamlit
+torch
+torchvision
+segmentation-models-pytorch
+albumentations
+pillow
+pillow-heif
+numpy
+opencv-python
+matplotlib
+tqdm
+pycocotools
+kaggle

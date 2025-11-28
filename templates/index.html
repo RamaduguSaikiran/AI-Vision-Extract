@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- GRID: HERO LEFT + RIGHT -->
+<section class="grid gap-10 lg:grid-cols-[1.15fr,0.95fr] items-stretch">
+
+  <!-- HERO LEFT -->
+  <div class="hero-nebula p-px">
+    <div class="relative h-full rounded-[1.85rem] bg-slate-950/70 backdrop-blur-xl border border-slate-700/80">
+      <div class="relative h-full px-6 py-7 md:px-8 md:py-9 flex flex-col justify-between gap-6">
+
+        <!-- HERO TEXT -->
+        <div class="space-y-5">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/50
+                      bg-emerald-400/10 px-3 py-1 text-xs text-emerald-100">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Real-time AI Background Intelligence</span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+            Design your images with
+            <span class="bg-gradient-to-r from-sky-300 via-emerald-200 to-pink-300
+                         bg-clip-text text-transparent">
+              background-aware AI.
+            </span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-sm md:text-base text-slate-200/90 max-w-xl">
+            AIvision Extract is your background studio for removing, replacing, and enhancing images
+            using a custom U-Net segmentation model — built for quality, speed, and smooth workflows.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="{{ url_for('background_removal') }}"
+               class="ai-btn-holo"
+               data-magnetic="true">
+               🚀 Start Background Removal
+            </a>
+
+            <a href="{{ url_for('sample_gallery') }}"
+               class="ai-btn-secondary text-[0.72rem] md:text-xs px-4 py-2"
+               data-magnetic="true">
+               ▶ View Sample Gallery
+            </a>
+          </div>
+        </div>
+
+        <!-- 3 Small Feature Cards -->
+        <div class="grid grid-cols-3 gap-4 text-[0.7rem] md:text-xs text-slate-200/90">
+          <div class="rounded-2xl bg-slate-900/55 border border-slate-700/80 px-3 py-2.5">
+            <div class="text-[0.7rem] uppercase text-slate-400 tracking-wide">Model</div>
+            <div class="font-semibold">Custom U-Net</div>
+            <div class="text-slate-400 text-[0.68rem]">Segmentation head tuned</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900/55 border border-slate-700/80 px-3 py-2.5">
+            <div class="text-[0.7rem] uppercase text-slate-400 tracking-wide">Pipeline</div>
+            <div class="font-semibold">Remove · Replace · Blur</div>
+            <div class="text-slate-400 text-[0.68rem]">Single interface</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900/55 border border-slate-700/80 px-3 py-2.5">
+            <div class="text-[0.7rem] uppercase text-slate-400 tracking-wide">Batch</div>
+            <div class="font-semibold">Multi-image</div>
+            <div class="text-slate-400 text-[0.68rem]">ZIP export ready</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO RIGHT : VIDEO + BEFORE/AFTER -->
+  <div class="ai-card-glass">
+    <div class="ai-card-glass-inner p-3 md:p-4">
+
+      <!-- VIDEO -->
+      <div class="relative ai-preview-frame">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+          <source src="{{ url_for('static', filename='video/AI_Background_Removal_Video_Generation.mp4') }}" type="video/mp4">
+        </video>
+
+        <!-- fade -->
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent"></div>
+
+        <!-- label -->
+        <div class="absolute bottom-3 left-3 text-[0.6rem] uppercase tracking-wide
+                    text-slate-200 bg-slate-900/80 px-2 py-1 rounded-full border border-slate-700">
+          AIvision · Background Pipeline
+        </div>
+      </div>
+
+      <!-- BEFORE / AFTER TITLES -->
+      <div class="mt-8 mb-2 flex items-center justify-center gap-10">
+        <h3 class="text-xl md:text-2xl font-semibold tracking-wide
+                   bg-gradient-to-r from-cyan-300 to-blue-500 text-transparent bg-clip-text
+                   drop-shadow-[0_0_10px_rgba(56,189,248,0.35)]">
+          BEFORE
+        </h3>
+
+        <div class="w-2 h-2 rounded-full bg-slate-500/60"></div>
+
+        <h3 class="text-xl md:text-2xl font-semibold tracking-wide
+                   bg-gradient-to-r from-fuchsia-300 to-pink-500 text-transparent bg-clip-text
+                   drop-shadow-[0_0_10px_rgba(236,72,153,0.35)]">
+          AFTER
+        </h3>
+      </div>
+
+      <!-- BEFORE / AFTER IMAGES -->
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- BEFORE -->
+        <div class="ai-preview-frame p-3">
+          <div class="ai-preview-cinematic">
+            <img src="{{ url_for('static', filename='images/before.jpg') }}"
+                 class="w-full rounded-xl shadow-lg" />
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="ai-preview-frame p-3">
+          <div class="ai-preview-cinematic">
+            <img src="{{ url_for('static', filename='images/after.png') }}"
+                 class="w-full rounded-xl shadow-lg" />
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+
+<!-- CORE CAPABILITIES -->
+<section class="mt-20 mb-16">
+
+  <!-- Title -->
+  <div class="text-center mb-10">
+    <h2 class="text-3xl md:text-4xl font-bold tracking-tight
+               bg-gradient-to-r from-pink-300 to-purple-400 text-transparent bg-clip-text">
+      ✨ Core Capabilities
+    </h2>
+    <p class="text-slate-300 text-sm mt-2">
+      End-to-end AI image background pipeline
+    </p>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Removal -->
+    <div class="ai-card-glass p-5 hover:scale-[1.02] transition duration-300">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">🧼</span>
+        <div>
+          <h3 class="font-semibold text-lg">Background Removal</h3>
+          <p class="text-slate-300 text-sm mt-1 leading-relaxed">
+            Pixel-level foreground extraction powered by your custom U-Net model.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Replacement -->
+    <div class="ai-card-glass p-5 hover:scale-[1.02] transition duration-300">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">🎨</span>
+        <div>
+          <h3 class="font-semibold text-lg">Background Replacement</h3>
+          <p class="text-slate-300 text-sm mt-1 leading-relaxed">
+            Swap backgrounds with colors or custom images.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blur -->
+    <div class="ai-card-glass p-5 hover:scale-[1.02] transition duration-300">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">📸</span>
+        <div>
+          <h3 class="font-semibold text-lg">Portrait Blur</h3>
+          <p class="text-slate-300 text-sm mt-1 leading-relaxed">
+            Depth-of-field blur around auto-detected subjects.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch -->
+    <div class="ai-card-glass p-5 hover:scale-[1.02] transition duration-300">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">📁</span>
+        <div>
+          <h3 class="font-semibold text-lg">Batch Processing</h3>
+          <p class="text-slate-300 text-sm mt-1 leading-relaxed">
+            Process many images at once, export as ZIP.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="ai-card-glass p-5 hover:scale-[1.02] transition duration-300">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">🖼️</span>
+        <div>
+          <h3 class="font-semibold text-lg">Sample Gallery</h3>
+          <p class="text-slate-300 text-sm mt-1 leading-relaxed">
+            Curated results showcasing model quality.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}
