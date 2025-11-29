@@ -3,21 +3,32 @@ import cv2
 from PIL import Image
 import torch
 import io
-import os
 
 from modules.model_loader import DEVICE, load_model
 from modules.preprocessing import preprocess
 
-model = load_model()
+
+# -------------------------
+# LAZY MODEL LOADING FIX
+# -------------------------
+_cached_model = None
+
+def get_model():
+    """Load model only once — prevents Render memory timeout."""
+    global _cached_model
+    if _cached_model is None:
+        _cached_model = load_model()
+    return _cached_model
 
 
-# ============ UTIL: Accept PIL or File Path ============
+# -------------- UTIL --------------
+
 def load_image_auto(img_or_path):
     if isinstance(img_or_path, Image.Image):
         return img_or_path.convert("RGB")
     if isinstance(img_or_path, str):
         return Image.open(img_or_path).convert("RGB")
-    raise ValueError("Invalid image input: must be PIL image or file path")
+    raise ValueError("Invalid image input")
 
 
 def save_image_if_requested(pil_img, save_to=None):
@@ -30,9 +41,12 @@ def save_image_if_requested(pil_img, save_to=None):
         return None
 
 
-# ============ MODEL MASK ============
+# -------------- MASK --------------
 
 def get_mask(image_np):
+    model = get_model()
+
+    # If model failed to load (no file)
     if model is None:
         return np.ones(image_np.shape[:2], dtype=np.uint8)
 
@@ -46,7 +60,7 @@ def get_mask(image_np):
     return cv2.resize(mask, (W, H))
 
 
-# ============ BACKGROUND REMOVAL ============
+# -------------- BACKGROUND REMOVAL --------------
 
 def remove_background(img_or_path, save_to=None):
     pil_img = load_image_auto(img_or_path)
@@ -57,37 +71,34 @@ def remove_background(img_or_path, save_to=None):
 
     out = Image.fromarray(removed).convert("RGBA")
 
-    # Remove BLACK pixels → transparent
-    datas = out.getdata()
-    new_data = []
-    for item in datas:
-        if item[:3] == (0, 0, 0):
-            new_data.append((0, 0, 0, 0))
+    data = []
+    for r, g, b, a in out.getdata():
+        if (r, g, b) == (0, 0, 0):
+            data.append((0, 0, 0, 0))
         else:
-            new_data.append(item)
-    out.putdata(new_data)
+            data.append((r, g, b, a))
+    out.putdata(data)
 
     return save_image_if_requested(out, save_to)
 
 
-# ============ BLUR ============
+# -------------- BLUR --------------
 
 def blur_background(img_or_path, blur_px=45, save_to=None):
     pil_img = load_image_auto(img_or_path)
     img_np = np.array(pil_img)
 
     mask = get_mask(img_np)
-
     k = blur_px if blur_px % 2 == 1 else blur_px + 1
     blurred = cv2.GaussianBlur(img_np, (k, k), 0)
 
     result = img_np * mask[..., None] + blurred * (1 - mask[..., None])
-    out = Image.fromarray(result)
+    out = Image.fromarray(result.astype("uint8"))
 
     return save_image_if_requested(out, save_to)
 
 
-# ============ COLOR REPLACE ============
+# -------------- COLOR REPLACE --------------
 
 def replace_background_color(img_or_path, hex_color, save_to=None):
     pil_img = load_image_auto(img_or_path)
@@ -99,11 +110,11 @@ def replace_background_color(img_or_path, hex_color, save_to=None):
     bg_layer = np.full(img_np.shape, rgb, dtype=np.uint8)
     result = img_np * mask[..., None] + bg_layer * (1 - mask[..., None])
 
-    out = Image.fromarray(result)
+    out = Image.fromarray(result.astype("uint8"))
     return save_image_if_requested(out, save_to)
 
 
-# ============ IMAGE REPLACE ============
+# -------------- IMAGE REPLACE --------------
 
 def replace_background_image(img_or_path, bg_or_path, save_to=None):
     pil_img = load_image_auto(img_or_path)
@@ -116,15 +127,15 @@ def replace_background_image(img_or_path, bg_or_path, save_to=None):
     mask = get_mask(img_np)
     result = img_np * mask[..., None] + bg_np * (1 - mask[..., None])
 
-    out = Image.fromarray(result)
+    out = Image.fromarray(result.astype("uint8"))
     return save_image_if_requested(out, save_to)
 
 
-# ============ UNIFORM RESIZE FOR GALLERY & BATCH ============
+# -------------- THUMBNAIL FOR BATCH/GALLERY --------------
 
 def uniform_resize(pil_img, size=450):
     img = pil_img.copy()
-    img.thumbnail((size, size), Image.Resampling.LANCZOS)
+    img.thumbnail((size, size), Image.LANCZOS)
 
     box = Image.new("RGB", (size, size), (255, 255, 255))
     x = (size - img.width) // 2
