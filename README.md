@@ -1,15 +1,9 @@
-<p align="center">
-  <img src="https://dummyimage.com/1200x300/000/fff&text=AI+Vision+Extract" alt="Project Banner"/>
-</p>
+
 
 <h1 align="center">🧠 AI-Vision-Extract</h1>
 
 <p align="center">
   <b>Advanced AI Background Removal, Replacement & Blur — Flask + Docker + PyTorch</b>
-</p>
-
-<p align="center">
-  <img src="https://dummyimage.com/150x150/0c0/fff&text=Logo" width="140" alt="Project Logo"/>
 </p>
 
 ---
@@ -31,5 +25,5 @@ Everything runs inside a **Docker container**, making deployment smooth on **Rai
 
 ---
 
-## 📁 Project Structure
-
+## Deployment Link: 
+https://ai-vision-extract-2.onrender.com/
