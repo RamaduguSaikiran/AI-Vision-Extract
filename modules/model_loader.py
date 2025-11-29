@@ -5,7 +5,7 @@ import torch.nn as nn
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-MODEL_PATH = r"C:\Users\Naga Sai\OneDrive\文档\Projects\AIvision_Extract\best_model.pth"
+MODEL_PATH = os.path.join("static", "model", "best_model.pth")
 
 def build_model(device=DEVICE):
     model = smp.Unet(
