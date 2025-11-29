@@ -10,11 +10,11 @@
 
 ## 🚀 Overview
 
-**AI-Vision-Extract** is a modern web application for automated image background processing using AI.  
-Everything runs inside a **Docker container**, making deployment smooth on **Railway, Render, AWS, Azure, etc.**
+**AI-Vision-Extract** is a modern web application for automated image background processing using ML model.  
+Everything runs inside a **Docker container**, making deployment smooth on **Render**
 
 ### ✨ Features
-- ⭐ AI Background Removal (U²-Net model)
+- ⭐ Background Removal (U-Net model)
 - 🎨 Replace Background (Solid Color / Custom Image)
 - 🎛 Adjustable Background Blur
 - 📦 Batch Processing of Multiple Images
