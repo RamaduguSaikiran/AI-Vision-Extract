@@ -26,6 +26,15 @@ COPY . .
 # 5. Install Python dependencies
 # --------------------------------------------
 RUN pip install --upgrade pip setuptools wheel
+
+# Install numpy first
+RUN pip install numpy==1.26.4
+
+# Install heavy packages
+RUN pip install torch==2.1.0 torchvision==0.16.0
+RUN pip install segmentation_models_pytorch==0.3.3
+
+
 RUN pip install -r requirements.txt
 
 # --------------------------------------------
