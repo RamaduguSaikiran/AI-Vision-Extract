@@ -2,8 +2,9 @@ services:
   - type: web
     name: aivision-extract
     env: python
-    region: singapore
-    plan: free
+    plan: starter
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app --timeout 500 --threads 4"
-    autoDeploy: true
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.13
